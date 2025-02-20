@@ -79,9 +79,11 @@ pipeline {
             }
         }
 
-        stage('Quality Gate') {
+        stage('SonarQube GateKeeper') {
             steps {
-                waitForQualityGate abortPipeline: true
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
 
@@ -96,10 +98,10 @@ pipeline {
             }
             post {
                 success {
-                    echo 'Arfiacts has been backed up onto Nexus..!'
+                    echo 'Artifacts have been backed up onto Nexus..!'
                 }
                 failure {
-                    echo 'Artifact upload failed hence removing the settings.xml file which might cause issues on the check-style'
+                    echo 'Artifact upload failed, removing the settings.xml file to avoid issues with checkstyle.'
                     sh 'sudo rm -f /var/lib/jenkins/.m2/settings.xml'
                 }
             }
