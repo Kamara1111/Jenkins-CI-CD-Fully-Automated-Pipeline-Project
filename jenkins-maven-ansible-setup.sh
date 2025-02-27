@@ -1,20 +1,36 @@
 #!/bin/bash
+# Ensure that your software packages are up to date on your instance by using the following command to perform a quick software update:
+sudo yum update –y
 sudo su
-yum update –y
-wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-amazon-linux-extras install epel -y
-amazon-linux-extras install java-openjdk11 -y
-yum install jenkins -y
-echo "jenkins ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-systemctl enable jenkins
-systemctl start jenkins
+sudo yum install wget -y
+
+# Add the Jenkins repo using the following command:
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+
+#Import a key file from Jenkins-CI to enable installation from the package:
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+sudo yum upgrade -y
+
+# Install Java (Amazon Linux 2023):
+sudo dnf install java-17-amazon-corretto -y
+
+sudo echo "jenkins ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+# Install Jenkins
+sudo yum install jenkins -y
+
+# Enable the Jenkins service to start at boot:
+sudo systemctl enable jenkins
+
+# Start Jenkins as a service:
+sudo systemctl start jenkins
 
 # Installing Git
-yum install git -y
+sudo yum install git -y
 
-# Installing Ansible
-amazon-linux-extras install ansible2 -y
+sudo yum install ansible
 yum install python-pip -y
 pip install boto3
 
@@ -41,4 +57,4 @@ echo "ansibleadmin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Use The Amazon Linux 2 AMI When Launching The Jenkins VM/EC2 Instance
 # Instance Type: t2.medium or small minimum
-# Open Port (Security Group): 8080 
+# Open Port (Security Group): 8080
